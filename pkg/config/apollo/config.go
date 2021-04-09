@@ -89,7 +89,7 @@ func InitViperConfig(path string, configType string, configName string) *ApolloC
 	if err := apolloConfig.verify(); err != nil {
 		log.Fatal(err)
 	}
-	vip.OnConfigChange()
+	//vip.OnConfigChange()
 
 	return apolloConfig
 }

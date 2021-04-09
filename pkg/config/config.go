@@ -21,7 +21,8 @@ func (this *ConfigContainer) get(name string) (*Congfig, error) {
 }
 
 func (this *ConfigContainer) set(name string, value interface{}) error {
-	this.container[name] = value
+	this.container[name] = &Congfig{value: value, name: name}
+	return nil
 }
 
 type Congfig struct {
@@ -29,4 +30,3 @@ type Congfig struct {
 	path  string
 	value interface{}
 }
-
