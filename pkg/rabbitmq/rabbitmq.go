@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"wheels/pkg/pool"
 
 	"github.com/streadway/amqp"
 )
@@ -21,7 +22,7 @@ func (cof RabbitMQConfig) getConnString() string {
 }
 
 type RabbitMQ struct {
-	conn      *amqp.Connection
+	connPool  pool.Pool
 	consumers []*Consumer
 }
 type consumeFn func([]byte) bool
@@ -39,19 +40,28 @@ func getConn(cof RabbitMQConfig) (*amqp.Connection, error) {
 }
 
 func NewRabbitMQ(cof RabbitMQConfig) (*RabbitMQ, error) {
-	conn, err := getConn(cof)
-	if err != nil {
-		log.Panicln(err)
-		return nil, err
-	}
+	//*amqp.Connection
+	p := pool.NewPool(pool.PoolConfig{
+		Min: 5,
+		Max: 10,
+		InitFn: func() interface{} {
+			err, conn := getConn(cof)
+			if err != nil {
+				log.Panicln(err)
+				return nil
+			}
+			return conn
+		},
+	})
 	return &RabbitMQ{
-		conn:      conn,
+		connPool:  p,
 		consumers: []*Consumer{},
 	}, nil
 }
 
 func (rb *RabbitMQ) NewConsumer(queueName string, consumeFn consumeFn) (*Consumer, error) {
-	ch, err := rb.conn.Channel()
+	conn, _ := rb.connPool.Get().(*amqp.Connection)
+	ch, err := conn.Channel()
 	if err != nil {
 		return nil, err
 	}

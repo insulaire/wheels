@@ -1,9 +1,11 @@
 package rabbitmq
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"testing"
+	"time"
 )
 
 func Test(t *testing.T) {
@@ -26,7 +28,19 @@ func Test(t *testing.T) {
 	// if err != nil {
 	// 	log.Panicln(err)
 	// }
+	for i := 0; i < 7; i++ {
+		_, err = rb.NewConsumer("test", func(b []byte) bool {
+			fmt.Println(string(b))
+			time.Sleep(time.Microsecond * 100)
+			return true
+		})
+		if err != nil {
+			log.Panicln(err)
+		}
+	}
+
 	go func() {
+
 		qe, err := rb.NewConsumer("test", nil)
 		if err != nil {
 			log.Panicln(err)
