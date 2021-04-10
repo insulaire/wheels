@@ -45,7 +45,7 @@ func NewRabbitMQ(cof RabbitMQConfig) (*RabbitMQ, error) {
 		Min: 5,
 		Max: 10,
 		InitFn: func() interface{} {
-			err, conn := getConn(cof)
+			conn, err := getConn(cof)
 			if err != nil {
 				log.Panicln(err)
 				return nil

@@ -54,7 +54,7 @@ func NewPool(config PoolConfig) Pool {
 	}
 	if config.ExpiredFn == nil {
 		config.ExpiredFn = func(i interface{}) bool {
-			return true
+			return false
 		}
 	}
 	if config.WatchFn == nil {
@@ -121,7 +121,10 @@ func (p *pool) Get() interface{} {
 			go p.watchFn(v)
 			continue
 		}
-		return v
+		if v == nil {
+			return v
+		}
+		return v.value
 	}
 }
 

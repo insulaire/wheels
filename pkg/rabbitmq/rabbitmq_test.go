@@ -9,17 +9,19 @@ import (
 )
 
 func Test(t *testing.T) {
+
 	//close := make(chan struct{})
 	rb, err := NewRabbitMQ(RabbitMQConfig{
-		UserName:    "dev_user",
-		Password:    "dev_user@passw0rd",
-		Host:        "test-rabbitmq.ops.eminxing.com",
+		UserName:    "admin",
+		Password:    "admin",
+		Host:        "localhost",
 		Port:        5672,
-		VirtualHost: "LMS_DEV",
+		VirtualHost: "",
 	})
 	if err != nil {
 		log.Panicln(err)
 	}
+
 	// _, err = rb.NewQueue("test", func(b []byte) bool {
 	// 	//fmt.Println(string(b))
 	// 	time.Sleep(time.Microsecond * 100)
