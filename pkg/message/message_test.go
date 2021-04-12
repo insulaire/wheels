@@ -57,7 +57,7 @@ func Test(t *testing.T) {
 	}
 	pack := NewPack()
 	msg := NewMessage(123, []byte("abcdefg"))
-	msg1 := NewMessage(122, []byte("abcdefg"))
+	msg1 := NewMessage(122, []byte("abcdeddddfg"))
 	buf1, err := pack.Pack(msg)
 	if err != nil {
 		return
